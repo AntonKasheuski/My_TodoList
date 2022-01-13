@@ -7,41 +7,41 @@ type PropsType = {
 
 export const AddItem = (props: PropsType) => {
 
-    const [taskTextInsert, setTaskTextInsert] = useState<string>('')
+    const [itemTextInsert, setItemTextInsert] = useState<string>('')
     const [error, setError] = useState<boolean>(false)
 
-    const taskTextInsertHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const itemTextInsertHandler = (e: ChangeEvent<HTMLInputElement>) => {
         if (error) {
             setError(false)
-            setTaskTextInsert('')
+            setItemTextInsert('')
         } else {
-            setTaskTextInsert(e.currentTarget.value)
+            setItemTextInsert(e.currentTarget.value)
         }
     }
-    const addTask = () => {
-        const trimmedTask = taskTextInsert.trim()
-        if (trimmedTask) {
-            props.addItem(taskTextInsert)
-            setTaskTextInsert('')
+    const addItem = () => {
+        const trimmedItem = itemTextInsert.trim()
+        if (trimmedItem) {
+            props.addItem(itemTextInsert)
+            setItemTextInsert('')
         } else {
             setError(true)
-            setTaskTextInsert('Add text!')
+            setItemTextInsert('Add text!')
         }
     }
-    const addTaskOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    const addItemOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            addTask()
+            addItem()
         }
     }
 
     return (
         <div>
             <input className={error ? "error" : ""}
-                   value={taskTextInsert}
-                   onChange={taskTextInsertHandler}
-                   onKeyPress={addTaskOnEnter}
+                   value={itemTextInsert}
+                   onChange={itemTextInsertHandler}
+                   onKeyPress={addItemOnEnter}
             />
-            <button onClick={addTask}>+</button>
+            <button onClick={addItem}>+</button>
         </div>
     );
 };

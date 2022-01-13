@@ -68,6 +68,18 @@ function App() {
         setTodoLists([...todoLists, {id: newTodoListID, titleTD: title, filter: 'all'}])
         setTasks({...tasks, [newTodoListID]: []})
     }
+    const renameTask = (title: string, todoListID: string, taskID: string) => {
+        const tasksCopy = {...tasks}
+        tasksCopy[todoListID] = tasks[todoListID].map(t =>
+            t.id === taskID ? {...t, title} : t)
+        setTasks(tasksCopy)
+    }
+
+    const renameTodoList = (title: string, todoListID: string) => {
+        const newTodoLists = todoLists.map(tl =>
+            tl.id === todoListID ? {...tl, titleTD: title} : tl)
+        setTodoLists(newTodoLists)
+    }
 
     const todoListsRender = todoLists.map(tl => {
         let filteredTasks = [...tasks[tl.id]]
@@ -89,6 +101,8 @@ function App() {
                 changeTaskStatus={changeTaskStatus}
                 changeFilter={changeFilter}
                 removeTodoList={removeTodoList}
+                renameTask={renameTask}
+                renameTodoList={renameTodoList}
             />
         )
     })

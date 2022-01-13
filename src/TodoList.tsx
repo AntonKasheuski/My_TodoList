@@ -2,6 +2,7 @@ import React, {ChangeEvent} from 'react';
 import {FilterType, TaskType} from "./App";
 import './App.css'
 import {AddItem} from "./AddItem";
+import {EditableSpan} from "./EditableSpan";
 
 type TodoListPropsType = {
     todoListTitle: string,
@@ -13,6 +14,8 @@ type TodoListPropsType = {
     changeTaskStatus: (taskID: string, isDone: boolean, todoListID: string) => void
     changeFilter: (filter: FilterType, todoListID: string) => void
     removeTodoList: (todoListID: string) => void
+    renameTask: (title: string, todoListID: string, taskID: string) => void
+    renameTodoList: (title: string, todoListID: string) => void
 }
 
 const TodoList = (props: TodoListPropsType) => {
@@ -23,10 +26,13 @@ const TodoList = (props: TodoListPropsType) => {
         const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
             props.changeTaskStatus(t.id, e.currentTarget.checked, props.todoListID)
         }
+        const renameTask = (title: string) => {
+            props.renameTask(title, props.todoListID, t.id)
+        }
         return (
             <li key={t.id} className={t.isDone ? 'is-done' : ''}>
                 <input type={"checkbox"} checked={t.isDone} onChange={changeTaskStatus}/>
-                <span>{t.title}</span>
+                <EditableSpan title={t.title} renameItem={renameTask}/>
                 <button onClick={() => removeTask(t.id, props.todoListID)}>x</button>
             </li>
         )
@@ -42,10 +48,14 @@ const TodoList = (props: TodoListPropsType) => {
         props.addTask(title, props.todoListID)
     }
 
+    const renameTodoList = (title: string) => {
+        props.renameTodoList(title, props.todoListID)
+    }
+
     return (
         <div>
             <h3>
-                {props.todoListTitle}
+                <EditableSpan title={props.todoListTitle} renameItem={renameTodoList} />
                 <button onClick={onClickRemoveTodoListHandler}>X</button>
             </h3>
             <AddItem
