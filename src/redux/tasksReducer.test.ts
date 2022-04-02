@@ -1,7 +1,7 @@
 import {AddTaskAC, ChangeTaskStatusAC, RemoveTaskAC, RenameTaskAC, TasksListType, tasksReducer} from "./tasksReducer";
+import {AddTodolistAC, RemoveTodolistAC} from "./todolistsReducer";
 
 let tasksInitialState: TasksListType
-
 beforeEach(() => {
     tasksInitialState = {
         ["todolistsID1"]: [{id: "id1", title: "task1", isDone: true},
@@ -40,4 +40,16 @@ test('task title should be changed', () => {
     const endState = tasksReducer(tasksInitialState, RenameTaskAC("todolistsID2", "id6", "New Title"))
 
     expect(endState["todolistsID2"][1].title).toBe("New Title")
+})
+
+test('empty task array should be added when new todolist is created', () => {
+    const endState = tasksReducer(tasksInitialState, AddTodolistAC("New Todolist"))
+
+    expect(endState["newID"]).toBeDefined()
+})
+test('task array of removed todolist should be removed', () => {
+    const endState = tasksReducer(tasksInitialState, RemoveTodolistAC("todolistsID1"))
+
+    expect(endState["todolistsID1"]).toBeUndefined()
+    expect(endState["todolistsID2"]).toBeDefined()
 })
