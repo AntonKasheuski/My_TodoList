@@ -20,17 +20,18 @@ export type TasksListType = {
 }
 
 function App() {
-    const todoListsID1 = v1();
-    const todoListsID2 = v1();
+    const todolistsID1 = v1();
+    const todolistsID2 = v1();
+
     const [todoLists, setTodoLists] = useState<Array<TodoListType>>([
-        {id: todoListsID1, titleTD: "First TodoList", filter: 'all'},
-        {id: todoListsID2, titleTD: "Second TodoList", filter: 'all'},
+        {id: todolistsID1, titleTD: "First TodoList", filter: 'all'},
+        {id: todolistsID2, titleTD: "Second TodoList", filter: 'all'},
     ])
     const [tasks, setTasks] = useState<TasksListType>({
-        [todoListsID1]: [{id: v1(), title: "task1", isDone: true},
+        [todolistsID1]: [{id: v1(), title: "task1", isDone: true},
             {id: v1(), title: "task2", isDone: false},
             {id: v1(), title: "task3", isDone: false}],
-        [todoListsID2]: [{id: v1(), title: "task5", isDone: true},
+        [todolistsID2]: [{id: v1(), title: "task5", isDone: true},
             {id: v1(), title: "task6", isDone: false},
             {id: v1(), title: "task7", isDone: false},
             {id: v1(), title: "task8", isDone: true}],
@@ -74,7 +75,6 @@ function App() {
             t.id === taskID ? {...t, title} : t)
         setTasks(tasksCopy)
     }
-
     const renameTodoList = (title: string, todoListID: string) => {
         const newTodoLists = todoLists.map(tl =>
             tl.id === todoListID ? {...tl, titleTD: title} : tl)
