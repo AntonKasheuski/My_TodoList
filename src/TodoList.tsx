@@ -1,81 +1,90 @@
 import React, {ChangeEvent} from 'react';
-import {FilterType, TaskType} from "./App";
 import './App.css'
 import {AddItem} from "./AddItem";
 import {EditableSpan} from "./EditableSpan";
+import {useDispatch, useSelector} from "react-redux";
+import {AddTaskAC, ChangeTaskStatusAC, RemoveTaskAC, RenameTaskAC, TaskType} from "./redux/tasksReducer";
+import {
+    ChangeTodolistFilterAC,
+    FilterType,
+    RemoveTodolistAC,
+    RenameTodolistAC,
+    TodolistType
+} from "./redux/todolistsReducer";
+import {AppRootStateType} from "./redux/store";
 
 type TodoListPropsType = {
-    todoListTitle: string,
-    todoListID: string,
-    todoListTasks: Array<TaskType>,
-    filter: FilterType,
-    removeTask: (taskID: string, todoListID: string) => void
-    addTask: (title: string, todoListID: string) => void
-    changeTaskStatus: (taskID: string, isDone: boolean, todoListID: string) => void
-    changeFilter: (filter: FilterType, todoListID: string) => void
-    removeTodoList: (todoListID: string) => void
-    renameTask: (title: string, todoListID: string, taskID: string) => void
-    renameTodoList: (title: string, todoListID: string) => void
+    todoListID: string
 }
 
 const TodoList = (props: TodoListPropsType) => {
-    const todoListTasks = props.todoListTasks.map(t => {
-        const removeTask = (taskID: string, todoListID: string) => {
-            props.removeTask(taskID, todoListID)
+    const todolist = useSelector<AppRootStateType, TodolistType>(state => state.todolists.filter(tl => tl.id === props.todoListID)[0])
+    let tasks = useSelector<AppRootStateType, Array<TaskType>>(state => state.tasks[props.todoListID])
+    const dispatch = useDispatch()
+
+    if (todolist.filter === "active") {
+        tasks = tasks.filter(t => !t.isDone)
+    }
+    if (todolist.filter === "completed") {
+        tasks = tasks.filter(t => t.isDone)
+    }
+
+    const todolistTasks = tasks.map(t => {
+        const removeTask = (todoListID: string, taskID: string) => {
+            dispatch(RemoveTaskAC(todoListID, taskID))
         }
         const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
-            props.changeTaskStatus(t.id, e.currentTarget.checked, props.todoListID)
+            dispatch(ChangeTaskStatusAC(props.todoListID, t.id, e.currentTarget.checked))
         }
         const renameTask = (title: string) => {
-            props.renameTask(title, props.todoListID, t.id)
+            dispatch(RenameTaskAC(props.todoListID, t.id, title))
         }
         return (
             <li key={t.id} className={t.isDone ? 'is-done' : ''}>
                 <input type={"checkbox"} checked={t.isDone} onChange={changeTaskStatus}/>
                 <EditableSpan title={t.title} renameItem={renameTask}/>
-                <button onClick={() => removeTask(t.id, props.todoListID)}>x</button>
+                <button onClick={() => removeTask(props.todoListID, t.id)}>x</button>
             </li>
         )
     })
 
     const onClickFilterHandler = (filter: FilterType) => {
-        props.changeFilter(filter, props.todoListID)
+        dispatch(ChangeTodolistFilterAC(props.todoListID, filter))
     }
     const onClickRemoveTodoListHandler = () => {
-        props.removeTodoList(props.todoListID)
+        dispatch(RemoveTodolistAC(props.todoListID))
     }
     const addTask = (title: string) => {
-        props.addTask(title, props.todoListID)
+        dispatch(AddTaskAC(props.todoListID, title))
     }
-
     const renameTodoList = (title: string) => {
-        props.renameTodoList(title, props.todoListID)
+        dispatch(RenameTodolistAC(props.todoListID, title))
     }
 
     return (
         <div>
             <h3>
-                <EditableSpan title={props.todoListTitle} renameItem={renameTodoList} />
+                <EditableSpan title={todolist.titleTD} renameItem={renameTodoList} />
                 <button onClick={onClickRemoveTodoListHandler}>X</button>
             </h3>
             <AddItem
                 addItem={addTask}
             />
             <ul>
-                {todoListTasks}
+                {todolistTasks}
             </ul>
             <div>
                 <button
-                    className={props.filter === 'all' ? 'active-filter' : ''}
+                    className={todolist.filter === 'all' ? 'active-filter' : ''}
                     onClick={() => onClickFilterHandler('all')}
                 >all
                 </button>
                 <button
-                    className={props.filter === 'active' ? 'active-filter' : ''}
+                    className={todolist.filter === 'active' ? 'active-filter' : ''}
                     onClick={() => onClickFilterHandler('active')}>active
                 </button>
                 <button
-                    className={props.filter === 'completed' ? 'active-filter' : ''}
+                    className={todolist.filter === 'completed' ? 'active-filter' : ''}
                     onClick={() => onClickFilterHandler('completed')}>completed
                 </button>
             </div>
