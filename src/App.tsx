@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import './App.css'
 import TodoList from "./TodoList";
 import {AddItem} from "./AddItem";
@@ -10,9 +10,9 @@ function App() {
     const todolists = useSelector<AppRootStateType, TodolistType[]>(state => state.todolists)
     const dispatch = useDispatch()
 
-    const addTodoList = (title: string) => {
+    const addTodoList = useCallback((title: string) => {
         dispatch(AddTodolistAC(title))
-    }
+    }, [])
 
     const todolistsRender = todolists.map(tl => {
         return (

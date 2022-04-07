@@ -6,8 +6,7 @@ type PropsType = {
     addItem: (title: string) => void
 }
 
-export const AddItem = (props: PropsType) => {
-
+export const AddItem = React.memo((props: PropsType) => {
     const [itemTextInsert, setItemTextInsert] = useState<string>(props.title ? props.title : '')
     const [error, setError] = useState<boolean>(false)
 
@@ -45,4 +44,4 @@ export const AddItem = (props: PropsType) => {
             <button onClick={addItem}>+</button>
         </div>
     );
-};
+});
