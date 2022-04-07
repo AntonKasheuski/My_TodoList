@@ -13,6 +13,9 @@ import {
 } from "./redux/todolistsReducer";
 import {AppRootStateType} from "./redux/store";
 import {Task} from "./Task";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Button from '@mui/material/Button'
 
 type TodoListPropsType = {
     todoListID: string
@@ -57,28 +60,36 @@ const TodoList = React.memo((props: TodoListPropsType) => {
         <div>
             <h3>
                 <EditableSpan title={todolist.titleTD} renameItem={renameTodoList} />
-                <button onClick={onClickRemoveTodoListHandler}>X</button>
+                <IconButton onClick={onClickRemoveTodoListHandler}>
+                    <DeleteIcon />
+                </IconButton>
             </h3>
             <AddItem
                 addItem={addTask}
             />
-            <ul>
-                {todolistTasks}
-            </ul>
             <div>
-                <button
-                    className={todolist.filter === 'all' ? 'active-filter' : ''}
+                {todolistTasks}
+            </div>
+            <div>
+                <Button
+                    color={'inherit'}
+                    variant={todolist.filter === 'all' ? 'outlined' : 'text'}
+                    size={'small'}
                     onClick={() => onClickFilterHandler('all')}
                 >all
-                </button>
-                <button
-                    className={todolist.filter === 'active' ? 'active-filter' : ''}
+                </Button>
+                <Button
+                    color={'secondary'}
+                    variant={todolist.filter === 'active' ? 'outlined' : 'text'}
+                    size={'small'}
                     onClick={() => onClickFilterHandler('active')}>active
-                </button>
-                <button
-                    className={todolist.filter === 'completed' ? 'active-filter' : ''}
+                </Button>
+                <Button
+                    color={'primary'}
+                    variant={todolist.filter === 'completed' ? 'outlined' : 'text'}
+                    size={'small'}
                     onClick={() => onClickFilterHandler('completed')}>completed
-                </button>
+                </Button>
             </div>
         </div>
     );

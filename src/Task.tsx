@@ -3,6 +3,9 @@ import {EditableSpan} from "./EditableSpan";
 import {ChangeTaskStatusAC, RemoveTaskAC, RenameTaskAC, TaskType} from "./redux/tasksReducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./redux/store";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Checkbox from '@mui/material/Checkbox';
 
 type TaskPropsType = {
     todoListID: string
@@ -24,10 +27,12 @@ export const Task = React.memo((props: TaskPropsType) => {
     }, [props.todoListID, props.taskID])
 
     return (
-        <li key={props.taskID} className={task.isDone ? 'is-done' : ''}>
-            <input type={"checkbox"} checked={task.isDone} onChange={changeTaskStatus}/>
+        <div key={props.taskID} className={task.isDone ? 'is-done' : ''}>
+            <Checkbox checked={task.isDone} onChange={changeTaskStatus}/>
             <EditableSpan title={task.title} renameItem={renameTask}/>
-            <button onClick={() => removeTask(props.todoListID, props.taskID)}>x</button>
-        </li>
+            <IconButton onClick={() => removeTask(props.todoListID, props.taskID)}>
+                <DeleteIcon />
+            </IconButton>
+        </div>
     );
 });

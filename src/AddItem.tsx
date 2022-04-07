@@ -1,5 +1,8 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import './App.css'
+import IconButton from '@mui/material/IconButton';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import {TextField} from "@mui/material";
 
 type PropsType = {
     title?: string
@@ -33,15 +36,28 @@ export const AddItem = React.memo((props: PropsType) => {
             addItem()
         }
     }
+    const onFocusHandler = () => {
+        if (error) {
+            setError(false)
+            setItemTextInsert('')
+        }
+    }
 
     return (
         <div>
-            <input className={error ? "error" : ""}
-                   value={itemTextInsert}
-                   onChange={itemTextInsertHandler}
-                   onKeyPress={addItemOnEnter}
+            <TextField value={itemTextInsert}
+                       label={'Title'}
+                       error={error}
+                       onFocus={onFocusHandler}
+                       helperText={error ? 'Incorrect entry.' : ''}
+                       onChange={itemTextInsertHandler}
+                       onKeyPress={addItemOnEnter}
             />
-            <button onClick={addItem}>+</button>
+            <IconButton color={'primary'}
+                        onClick={addItem}
+                        disabled={error}>
+                <AddBoxIcon/>
+            </IconButton>
         </div>
     );
 });
