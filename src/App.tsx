@@ -2,7 +2,7 @@ import React, {useCallback, useEffect} from 'react';
 import TodoList from "./TodoList";
 import {AddItem} from "./AddItem";
 import {useDispatch, useSelector} from "react-redux";
-import {AddTodolistAC, GetTodolistTC, TodolistType} from "./redux/todolistsReducer";
+import {AddTodolistTC, GetTodolistTC, TodolistType} from "./redux/todolistsReducer";
 import {AppRootStateType} from "./redux/store";
 import {Header} from "./Header";
 import Container from "@mui/material/Container";
@@ -16,7 +16,7 @@ function App() {
     useEffect(() => {dispatch(GetTodolistTC())}, [])
 
     const addTodoList = useCallback((title: string) => {
-        dispatch(AddTodolistAC(title))
+        dispatch(AddTodolistTC(title))
     }, [])
 
     const todolistsRender = todolists.map(tl => {

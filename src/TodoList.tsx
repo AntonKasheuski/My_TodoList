@@ -7,7 +7,7 @@ import {AddTaskTC, GetTasksTC} from "./redux/tasksReducer";
 import {
     ChangeTodolistFilterAC,
     FilterType,
-    RemoveTodolistAC,
+    RemoveTodolistTC,
     RenameTodolistAC,
     TodolistType
 } from "./redux/todolistsReducer";
@@ -50,7 +50,7 @@ const TodoList = React.memo((props: TodoListPropsType) => {
         dispatch(ChangeTodolistFilterAC(props.todoListID, filter))
     }, [props.todoListID])
     const onClickRemoveTodoListHandler = useCallback(() => {
-        dispatch(RemoveTodolistAC(props.todoListID))
+        dispatch(RemoveTodolistTC(props.todoListID))
     }, [props.todoListID])
     const addTask = useCallback((title: string) => {
         dispatch(AddTaskTC(props.todoListID, title))
@@ -62,7 +62,7 @@ const TodoList = React.memo((props: TodoListPropsType) => {
     return (
         <div>
             <h3>
-                <EditableSpan title={todolist.titleTD} renameItem={renameTodoList} />
+                <EditableSpan title={todolist.title} renameItem={renameTodoList} />
                 <IconButton onClick={onClickRemoveTodoListHandler}>
                     <DeleteIcon />
                 </IconButton>
