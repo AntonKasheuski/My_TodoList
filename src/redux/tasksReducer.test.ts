@@ -1,4 +1,4 @@
-import {AddTaskAC, ChangeTaskStatusAC, RemoveTaskAC, RenameTaskAC, TasksListType, tasksReducer} from "./tasksReducer";
+import {AddTaskAC, RemoveTaskAC, TasksListType, tasksReducer, UpdateTaskAC} from "./tasksReducer";
 import {AddTodolistAC, RemoveTodolistAC} from "./todolistsReducer";
 import {TaskStatuses} from "../api/task-api";
 
@@ -103,7 +103,18 @@ test('correct task should be removed', () => {
 })
 
 test('task should be added', () => {
-    const endState = tasksReducer(tasksInitialState, AddTaskAC("todolistsID2", "New Task"))
+    const endState = tasksReducer(tasksInitialState, AddTaskAC("todolistsID2", {
+        id: "id9",
+        title: "New Task",
+        description: "null",
+        todoListId: "todolistsID2",
+        order: 0,
+        status: 1,
+        priority: 1,
+        startDate: "2022",
+        deadline: "2022",
+        addedDate: "2022"
+    }))
 
     expect(endState["todolistsID2"].length).toBe(5)
     expect(endState["todolistsID1"].length).toBe(3)
@@ -111,13 +122,35 @@ test('task should be added', () => {
 })
 
 test('task status should be changed', () => {
-    const endState = tasksReducer(tasksInitialState, ChangeTaskStatusAC("todolistsID2", "id7", true))
+    const endState = tasksReducer(tasksInitialState, UpdateTaskAC("todolistsID2", {
+        id: "id7",
+        title: "task7",
+        description: "null",
+        todoListId: "todolistsID2",
+        order: -1,
+        status: 2,
+        priority: 1,
+        startDate: "2022",
+        deadline: "2022",
+        addedDate: "2022"
+    }))
 
     expect(endState["todolistsID2"][2].status).toBe(TaskStatuses.Completed)
 })
 
 test('task title should be changed', () => {
-    const endState = tasksReducer(tasksInitialState, RenameTaskAC("todolistsID2", "id6", "New Title"))
+    const endState = tasksReducer(tasksInitialState, UpdateTaskAC("todolistsID2", {
+        id: "id6",
+        title: "New Title",
+        description: "null",
+        todoListId: "todolistsID2",
+        order: -2,
+        status: 1,
+        priority: 1,
+        startDate: "2022",
+        deadline: "2022",
+        addedDate: "2022"
+    }))
 
     expect(endState["todolistsID2"][1].title).toBe("New Title")
 })

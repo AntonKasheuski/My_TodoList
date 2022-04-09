@@ -3,7 +3,7 @@ import './App.css'
 import {AddItem} from "./AddItem";
 import {EditableSpan} from "./EditableSpan";
 import {useDispatch, useSelector} from "react-redux";
-import {AddTaskAC, GetTasksTC} from "./redux/tasksReducer";
+import {AddTaskTC, GetTasksTC} from "./redux/tasksReducer";
 import {
     ChangeTodolistFilterAC,
     FilterType,
@@ -53,7 +53,7 @@ const TodoList = React.memo((props: TodoListPropsType) => {
         dispatch(RemoveTodolistAC(props.todoListID))
     }, [props.todoListID])
     const addTask = useCallback((title: string) => {
-        dispatch(AddTaskAC(props.todoListID, title))
+        dispatch(AddTaskTC(props.todoListID, title))
     }, [props.todoListID])
     const renameTodoList = useCallback((title: string) => {
         dispatch(RenameTodolistAC(props.todoListID, title))

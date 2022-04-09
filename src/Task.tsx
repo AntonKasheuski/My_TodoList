@@ -1,6 +1,10 @@
 import React, {ChangeEvent, useCallback} from 'react';
 import {EditableSpan} from "./EditableSpan";
-import {ChangeTaskStatusAC, RemoveTaskAC, RenameTaskAC} from "./redux/tasksReducer";
+import {
+    ChangeTaskStatusTC,
+    RemoveTaskTC,
+    RenameTaskTC
+} from "./redux/tasksReducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./redux/store";
 import IconButton from '@mui/material/IconButton';
@@ -18,14 +22,14 @@ export const Task = React.memo((props: TaskPropsType) => {
     const dispatch = useDispatch()
 
     const removeTask = useCallback((todoListID: string, taskID: string) => {
-        dispatch(RemoveTaskAC(todoListID, taskID))
+        dispatch(RemoveTaskTC(todoListID, taskID))
     }, [])
     const changeTaskStatus = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        dispatch(ChangeTaskStatusAC(props.todoListID, props.taskID, e.currentTarget.checked))
-    }, [props.todoListID, props.taskID])
+        dispatch(ChangeTaskStatusTC(props.todoListID, task, e.currentTarget.checked))
+    }, [props.todoListID, task])
     const renameTask = useCallback((title: string) => {
-        dispatch(RenameTaskAC(props.todoListID, props.taskID, title))
-    }, [props.todoListID, props.taskID])
+        dispatch(RenameTaskTC(props.todoListID, task, title))
+    }, [props.todoListID, task])
 
     return (
         <div key={props.taskID} className={task.status === TaskStatuses.Completed ? 'is-done' : ''}>
