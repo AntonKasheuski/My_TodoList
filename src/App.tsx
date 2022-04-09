@@ -1,8 +1,8 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import TodoList from "./TodoList";
 import {AddItem} from "./AddItem";
 import {useDispatch, useSelector} from "react-redux";
-import {AddTodolistAC, TodolistType} from "./redux/todolistsReducer";
+import {AddTodolistAC, GetTodolistTC, TodolistType} from "./redux/todolistsReducer";
 import {AppRootStateType} from "./redux/store";
 import {Header} from "./Header";
 import Container from "@mui/material/Container";
@@ -12,6 +12,8 @@ import Paper from "@mui/material/Paper";
 function App() {
     const todolists = useSelector<AppRootStateType, TodolistType[]>(state => state.todolists)
     const dispatch = useDispatch()
+
+    useEffect(() => {dispatch(GetTodolistTC())}, [])
 
     const addTodoList = useCallback((title: string) => {
         dispatch(AddTodolistAC(title))

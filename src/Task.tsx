@@ -1,11 +1,12 @@
 import React, {ChangeEvent, useCallback} from 'react';
 import {EditableSpan} from "./EditableSpan";
-import {ChangeTaskStatusAC, RemoveTaskAC, RenameTaskAC, TaskType} from "./redux/tasksReducer";
+import {ChangeTaskStatusAC, RemoveTaskAC, RenameTaskAC} from "./redux/tasksReducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./redux/store";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Checkbox from '@mui/material/Checkbox';
+import {TaskStatuses, TaskType} from "./api/task-api";
 
 type TaskPropsType = {
     todoListID: string
@@ -27,8 +28,8 @@ export const Task = React.memo((props: TaskPropsType) => {
     }, [props.todoListID, props.taskID])
 
     return (
-        <div key={props.taskID} className={task.isDone ? 'is-done' : ''}>
-            <Checkbox checked={task.isDone} onChange={changeTaskStatus}/>
+        <div key={props.taskID} className={task.status === TaskStatuses.Completed ? 'is-done' : ''}>
+            <Checkbox checked={task.status === TaskStatuses.Completed} onChange={changeTaskStatus}/>
             <EditableSpan title={task.title} renameItem={renameTask}/>
             <IconButton onClick={() => removeTask(props.todoListID, props.taskID)}>
                 <DeleteIcon />

@@ -1,16 +1,96 @@
 import {AddTaskAC, ChangeTaskStatusAC, RemoveTaskAC, RenameTaskAC, TasksListType, tasksReducer} from "./tasksReducer";
 import {AddTodolistAC, RemoveTodolistAC} from "./todolistsReducer";
+import {TaskStatuses} from "../api/task-api";
 
 let tasksInitialState: TasksListType
 beforeEach(() => {
     tasksInitialState = {
-        ["todolistsID1"]: [{id: "id1", title: "task1", isDone: true},
-            {id: "id2", title: "task2", isDone: false},
-            {id: "id3", title: "task3", isDone: false}],
-        ["todolistsID2"]: [{id: "id5", title: "task5", isDone: true},
-            {id: "id6", title: "task6", isDone: false},
-            {id: "id7", title: "task7", isDone: false},
-            {id: "id8", title: "task8", isDone: true}],
+        ["todolistsID1"]: [
+            {
+                id: "id1",
+                title: "task1",
+                description: "null",
+                todoListId: "todolistsID1",
+                order: -2,
+                status: 2,
+                priority: 1,
+                startDate: "2022",
+                deadline: "2022",
+                addedDate: "2022"
+            },
+            {
+                id: "id2",
+                title: "task2",
+                description: "null",
+                todoListId: "todolistsID1",
+                order: -1,
+                status: 1,
+                priority: 1,
+                startDate: "2022",
+                deadline: "2022",
+                addedDate: "2022"
+            },
+            {
+                id: "id3",
+                title: "task3",
+                description: "null",
+                todoListId: "todolistsID1",
+                order: 0,
+                status: 1,
+                priority: 1,
+                startDate: "2022",
+                deadline: "2022",
+                addedDate: "2022"
+            }],
+        ["todolistsID2"]: [
+            {
+                id: "id5",
+                title: "task5",
+                description: "null",
+                todoListId: "todolistsID2",
+                order: -3,
+                status: 2,
+                priority: 1,
+                startDate: "2022",
+                deadline: "2022",
+                addedDate: "2022"
+            },
+            {
+                id: "id6",
+                title: "task6",
+                description: "null",
+                todoListId: "todolistsID2",
+                order: -2,
+                status: 1,
+                priority: 1,
+                startDate: "2022",
+                deadline: "2022",
+                addedDate: "2022"
+            },
+            {
+                id: "id7",
+                title: "task7",
+                description: "null",
+                todoListId: "todolistsID2",
+                order: -1,
+                status: 1,
+                priority: 1,
+                startDate: "2022",
+                deadline: "2022",
+                addedDate: "2022"
+            },
+            {
+                id: "id8",
+                title: "task8",
+                description: "null",
+                todoListId: "todolistsID2",
+                order: 0,
+                status: 2,
+                priority: 1,
+                startDate: "2022",
+                deadline: "2022",
+                addedDate: "2022"
+            }],
     }
 })
 
@@ -33,7 +113,7 @@ test('task should be added', () => {
 test('task status should be changed', () => {
     const endState = tasksReducer(tasksInitialState, ChangeTaskStatusAC("todolistsID2", "id7", true))
 
-    expect(endState["todolistsID2"][2].isDone).toBe(true)
+    expect(endState["todolistsID2"][2].status).toBe(TaskStatuses.Completed)
 })
 
 test('task title should be changed', () => {

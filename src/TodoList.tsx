@@ -1,9 +1,9 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './App.css'
 import {AddItem} from "./AddItem";
 import {EditableSpan} from "./EditableSpan";
 import {useDispatch, useSelector} from "react-redux";
-import {AddTaskAC, TaskType} from "./redux/tasksReducer";
+import {AddTaskAC, GetTasksTC} from "./redux/tasksReducer";
 import {
     ChangeTodolistFilterAC,
     FilterType,
@@ -16,6 +16,7 @@ import {Task} from "./Task";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button'
+import {TaskStatuses, TaskType} from "./api/task-api";
 
 type TodoListPropsType = {
     todoListID: string
@@ -26,11 +27,13 @@ const TodoList = React.memo((props: TodoListPropsType) => {
     let tasks = useSelector<AppRootStateType, Array<TaskType>>(state => state.tasks[props.todoListID])
     const dispatch = useDispatch()
 
+    useEffect(() => {dispatch(GetTasksTC(props.todoListID))}, [props.todoListID])
+
     if (todolist.filter === "active") {
-        tasks = tasks.filter(t => !t.isDone)
+        tasks = tasks.filter(t => t.status === TaskStatuses.InProgress)
     }
     if (todolist.filter === "completed") {
-        tasks = tasks.filter(t => t.isDone)
+        tasks = tasks.filter(t => t.status === TaskStatuses.Completed)
     }
 
     const todolistTasks = tasks.map(t => {
