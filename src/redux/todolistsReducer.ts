@@ -31,16 +31,16 @@ export const todolistsReducer = (state: TodolistType[] = todolistsInitialState, 
                 } as TodolistType
             return [newTodolist, ...state]
         }
-        // case "RENAME-TODOLIST": {
-        //     return state.map(tl => tl.id === action.id
-        //         ? {...tl, titleTD: action.newTitleTD}
-        //         : tl)
-        // }
-        // case "CHANGE-TODOLIST-FILTER": {
-        //     return state.map(tl => tl.id === action.id
-        //         ? {...tl, filter: action.filter}
-        //         : tl)
-        // }
+        case "RENAME-TODOLIST": {
+            return state.map(tl => tl.id === action.id
+                ? {...tl, title: action.newTitle}
+                : tl)
+        }
+        case "CHANGE-TODOLIST-FILTER": {
+            return state.map(tl => tl.id === action.id
+                ? {...tl, filter: action.filter}
+                : tl)
+        }
         default:
             return state
     }
@@ -54,8 +54,8 @@ export const RemoveTodolistAC = (id: string) => {
 export const AddTodolistAC = (todolist: TodolistResponseType) => {
     return {type: 'ADD-TODOLIST', todolist} as const
 }
-export const RenameTodolistAC = (id: string, newTitleTD: string) => {
-    return {type: 'RENAME-TODOLIST', id, newTitleTD} as const
+export const RenameTodolistAC = (id: string, newTitle: string) => {
+    return {type: 'RENAME-TODOLIST', id, newTitle} as const
 }
 export const ChangeTodolistFilterAC = (id: string, filter: FilterType) => {
     return {type: 'CHANGE-TODOLIST-FILTER', id, filter} as const
@@ -77,14 +77,13 @@ export type TodolistsActionType = SetTodolistsAT
 export const GetTodolistTC = () => (dispatch: Dispatch) => {
     todolistApi.getTodolists()
         .then(res => {
-            dispatch(SetTodolistsAC(res.data))
+            dispatch(SetTodolistsAC(res))
         })
 }
 export const RemoveTodolistTC = (todolistId: string) => (dispatch: Dispatch) => {
     todolistApi.removeTodolist(todolistId)
         .then(res => {
-            debugger
-            if (res.data.resultCode === 0) {
+            if (res.resultCode === 0) {
                 dispatch(RemoveTodolistAC(todolistId))
             }
         })
@@ -92,9 +91,16 @@ export const RemoveTodolistTC = (todolistId: string) => (dispatch: Dispatch) => 
 export const AddTodolistTC = (title: string) => (dispatch: Dispatch) => {
     todolistApi.addTodolist(title)
         .then(res => {
-            debugger
-            if (res.data.resultCode === 0) {
-                dispatch(AddTodolistAC(res.data.data.item))
+            if (res.resultCode === 0) {
+                dispatch(AddTodolistAC(res.data.item))
+            }
+        })
+}
+export const RenameTodolistTC = (todolistId: string, title: string) => (dispatch: Dispatch) => {
+    todolistApi.renameTodolist(todolistId, title)
+        .then(res => {
+            if (res.resultCode === 0) {
+                dispatch(RenameTodolistAC(todolistId, title))
             }
         })
 }

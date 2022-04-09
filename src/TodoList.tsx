@@ -8,7 +8,7 @@ import {
     ChangeTodolistFilterAC,
     FilterType,
     RemoveTodolistTC,
-    RenameTodolistAC,
+    RenameTodolistTC,
     TodolistType
 } from "./redux/todolistsReducer";
 import {AppRootStateType} from "./redux/store";
@@ -56,7 +56,7 @@ const TodoList = React.memo((props: TodoListPropsType) => {
         dispatch(AddTaskTC(props.todoListID, title))
     }, [props.todoListID])
     const renameTodoList = useCallback((title: string) => {
-        dispatch(RenameTodolistAC(props.todoListID, title))
+        dispatch(RenameTodolistTC(props.todoListID, title))
     },[props.todoListID])
 
     return (

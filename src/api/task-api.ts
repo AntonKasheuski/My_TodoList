@@ -10,12 +10,15 @@ export enum TaskStatuses {
 export const tasksApi = {
     getTasks(todolistId: string) {
         return instance.get<GetTasksResponseType>(`/todo-lists/${todolistId}/tasks`)
+            .then(res => res.data)
     },
     removeTask(todolistId: string, taskId: string) {
         return instance.delete<ResponseType<{}>>(`/todo-lists/${todolistId}/tasks/${taskId}`)
+            .then(res => res.data)
     },
     addTask(todolistId: string, title: string) {
         return instance.post<ResponseType<{item: TaskType}>>(`/todo-lists/${todolistId}/tasks`, {title})
+            .then(res => res.data)
     },
     changeTaskStatus(todolistId: string, task: TaskType, isDone: boolean) {
         const data = {
@@ -27,6 +30,7 @@ export const tasksApi = {
             deadline: task.deadline
         }
         return instance.put<ResponseType<{item: TaskType}>>(`/todo-lists/${todolistId}/tasks/${task.id}`, data)
+            .then(res => res.data)
     },
     renameTask(todolistId: string, task: TaskType, title: string) {
         const data = {
@@ -38,6 +42,7 @@ export const tasksApi = {
             deadline: task.deadline
         }
         return instance.put<ResponseType<{item: TaskType}>>(`/todo-lists/${todolistId}/tasks/${task.id}`, data)
+            .then(res => res.data)
     }
 }
 

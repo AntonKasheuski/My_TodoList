@@ -82,13 +82,13 @@ export type TasksActionType = SetTodolistsAT
 export const GetTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
     tasksApi.getTasks(todolistId)
         .then(res => {
-            dispatch(SetTasksAC(res.data.items, todolistId))
+            dispatch(SetTasksAC(res.items, todolistId))
         })
 }
 export const RemoveTaskTC = (todolistId: string, taskId: string) => (dispatch: Dispatch) => {
     tasksApi.removeTask(todolistId, taskId)
         .then(res => {
-            if (res.data.resultCode === 0) {
+            if (res.resultCode === 0) {
                 dispatch(RemoveTaskAC(todolistId, taskId))
             }
         })
@@ -96,24 +96,24 @@ export const RemoveTaskTC = (todolistId: string, taskId: string) => (dispatch: D
 export const AddTaskTC = (todolistId: string, title: string) => (dispatch: Dispatch) => {
     tasksApi.addTask(todolistId, title)
         .then(res => {
-            if (res.data.resultCode === 0) {
-                dispatch(AddTaskAC(todolistId, res.data.data.item))
+            if (res.resultCode === 0) {
+                dispatch(AddTaskAC(todolistId, res.data.item))
             }
         })
 }
 export const ChangeTaskStatusTC = (todolistId: string, task: TaskType, isDone: boolean) => (dispatch: Dispatch) => {
     tasksApi.changeTaskStatus(todolistId, task, isDone)
         .then(res => {
-            if (res.data.resultCode === 0) {
-                dispatch(UpdateTaskAC(todolistId, res.data.data.item))
+            if (res.resultCode === 0) {
+                dispatch(UpdateTaskAC(todolistId, res.data.item))
             }
         })
 }
 export const RenameTaskTC = (todolistId: string, task: TaskType, title: string) => (dispatch: Dispatch) => {
     tasksApi.renameTask(todolistId, task, title)
         .then(res => {
-            if (res.data.resultCode === 0) {
-                dispatch(UpdateTaskAC(todolistId, res.data.data.item))
+            if (res.resultCode === 0) {
+                dispatch(UpdateTaskAC(todolistId, res.data.item))
             }
         })
 }
