@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect} from 'react';
-import './App.css'
-import {AddItem} from "./AddItem";
-import {EditableSpan} from "./EditableSpan";
+import './App.module.css'
+import {AddItem} from "./components/AddItem";
+import {EditableSpan} from "./components/EditableSpan";
 import {useDispatch, useSelector} from "react-redux";
 import {AddTaskTC, GetTasksTC} from "./redux/tasksReducer";
 import {

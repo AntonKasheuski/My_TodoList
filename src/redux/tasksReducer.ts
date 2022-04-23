@@ -1,6 +1,7 @@
 import {AddTodolistAT, RemoveTodolistAT, SetTodolistsAT} from "./todolistsReducer";
 import {Dispatch} from "redux";
 import {tasksApi, TaskType} from "../api/task-api";
+import {SetErrorAC, SetLoadingStatusAC} from "./app-reducer";
 
 export type TasksListType = {
     [key: string]: Array<TaskType>
@@ -80,39 +81,52 @@ export type TasksActionType = SetTodolistsAT
     | RemoveTodolistAT
 
 export const GetTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
+    dispatch(SetLoadingStatusAC(true))
     tasksApi.getTasks(todolistId)
         .then(res => {
+            dispatch(SetLoadingStatusAC(false))
             dispatch(SetTasksAC(res.items, todolistId))
         })
 }
 export const RemoveTaskTC = (todolistId: string, taskId: string) => (dispatch: Dispatch) => {
+    dispatch(SetLoadingStatusAC(true))
     tasksApi.removeTask(todolistId, taskId)
         .then(res => {
             if (res.resultCode === 0) {
+                dispatch(SetLoadingStatusAC(false))
                 dispatch(RemoveTaskAC(todolistId, taskId))
             }
         })
 }
 export const AddTaskTC = (todolistId: string, title: string) => (dispatch: Dispatch) => {
+    dispatch(SetLoadingStatusAC(true))
     tasksApi.addTask(todolistId, title)
         .then(res => {
             if (res.resultCode === 0) {
+                dispatch(SetLoadingStatusAC(false))
                 dispatch(AddTaskAC(todolistId, res.data.item))
+            } else {
+                dispatch(SetLoadingStatusAC(false))
+                dispatch(SetErrorAC(res.messages[0]))
             }
         })
 }
 export const ChangeTaskStatusTC = (todolistId: string, task: TaskType, isDone: boolean) => (dispatch: Dispatch) => {
+    dispatch(SetLoadingStatusAC(true))
     tasksApi.changeTaskStatus(todolistId, task, isDone)
         .then(res => {
             if (res.resultCode === 0) {
+                dispatch(SetLoadingStatusAC(false))
                 dispatch(UpdateTaskAC(todolistId, res.data.item))
             }
         })
 }
 export const RenameTaskTC = (todolistId: string, task: TaskType, title: string) => (dispatch: Dispatch) => {
+    dispatch(SetLoadingStatusAC(true))
     tasksApi.renameTask(todolistId, task, title)
         .then(res => {
             if (res.resultCode === 0) {
+                dispatch(SetLoadingStatusAC(false))
                 dispatch(UpdateTaskAC(todolistId, res.data.item))
             }
         })
