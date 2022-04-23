@@ -27,7 +27,9 @@ const TodoList = React.memo((props: TodoListPropsType) => {
     let tasks = useSelector<AppRootStateType, Array<TaskType>>(state => state.tasks[props.todoListID])
     const dispatch = useDispatch()
 
-    useEffect(() => {dispatch(GetTasksTC(props.todoListID))}, [props.todoListID])
+    useEffect(() => {
+        dispatch(GetTasksTC(props.todoListID))
+    }, [props.todoListID])
 
     if (todolist.filter === "active") {
         tasks = tasks.filter(t => t.status === TaskStatuses.InProgress)
@@ -42,6 +44,7 @@ const TodoList = React.memo((props: TodoListPropsType) => {
                 key={t.id}
                 todoListID={props.todoListID}
                 taskID={t.id}
+                disabled={todolist.entityStatus}
             />
         )
     })
@@ -57,19 +60,17 @@ const TodoList = React.memo((props: TodoListPropsType) => {
     }, [props.todoListID])
     const renameTodoList = useCallback((title: string) => {
         dispatch(RenameTodolistTC(props.todoListID, title))
-    },[props.todoListID])
+    }, [props.todoListID])
 
     return (
         <div>
             <h3>
-                <EditableSpan title={todolist.title} renameItem={renameTodoList} />
-                <IconButton onClick={onClickRemoveTodoListHandler}>
-                    <DeleteIcon />
+                <EditableSpan title={todolist.title} renameItem={renameTodoList} disabled={todolist.entityStatus}/>
+                <IconButton onClick={onClickRemoveTodoListHandler} disabled={todolist.entityStatus}>
+                    <DeleteIcon/>
                 </IconButton>
             </h3>
-            <AddItem
-                addItem={addTask}
-            />
+            <AddItem addItem={addTask} disabled={todolist.entityStatus}/>
             <div>
                 {todolistTasks}
             </div>

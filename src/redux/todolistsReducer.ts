@@ -3,7 +3,10 @@ import {todolistApi, TodolistResponseType} from "../api/todolist-api";
 import {SetErrorAC, SetLoadingStatusAC} from "./app-reducer";
 
 export type FilterType = 'all' | 'active' | 'completed'
-export type TodolistType = TodolistResponseType & { filter: FilterType }
+export type TodolistType = TodolistResponseType & {
+    filter: FilterType
+    entityStatus: boolean
+}
 
 const todolistsInitialState: TodolistType[] = []
 
@@ -15,7 +18,8 @@ export const todolistsReducer = (state: TodolistType[] = todolistsInitialState, 
                 addedDate: tl.addedDate,
                 order: tl.order,
                 title: tl.title,
-                filter: 'all'
+                filter: 'all',
+                entityStatus: false
             }))
         }
         case 'REMOVE-TODOLIST': {
@@ -28,7 +32,8 @@ export const todolistsReducer = (state: TodolistType[] = todolistsInitialState, 
                     addedDate: action.todolist.addedDate,
                     order: action.todolist.order,
                     title: action.todolist.title,
-                    filter: 'all'
+                    filter: 'all',
+                    entityStatus: false
                 } as TodolistType
             return [newTodolist, ...state]
         }
@@ -40,6 +45,11 @@ export const todolistsReducer = (state: TodolistType[] = todolistsInitialState, 
         case "CHANGE-TODOLIST-FILTER": {
             return state.map(tl => tl.id === action.id
                 ? {...tl, filter: action.filter}
+                : tl)
+        }
+        case "SET-ENTITY-STATUS": {
+            return state.map(tl => tl.id === action.id
+                ? {...tl, entityStatus: action.entityStatus}
                 : tl)
         }
         default:
@@ -61,18 +71,23 @@ export const RenameTodolistAC = (id: string, newTitle: string) => {
 export const ChangeTodolistFilterAC = (id: string, filter: FilterType) => {
     return {type: 'CHANGE-TODOLIST-FILTER', id, filter} as const
 }
+export const SetEntityStatusAC = (id: string, entityStatus: boolean) => {
+    return {type: 'SET-ENTITY-STATUS', id, entityStatus} as const
+}
 
 export type SetTodolistsAT = ReturnType<typeof SetTodolistsAC>
 export type RemoveTodolistAT = ReturnType<typeof RemoveTodolistAC>
 export type AddTodolistAT = ReturnType<typeof AddTodolistAC>
 export type RenameTodolistAT = ReturnType<typeof RenameTodolistAC>
 export type ChangeTodolistFilterAT = ReturnType<typeof ChangeTodolistFilterAC>
+export type SetEntityStatusAT = ReturnType<typeof SetEntityStatusAC>
 
 export type TodolistsActionType = SetTodolistsAT
     | RemoveTodolistAT
     | AddTodolistAT
     | RenameTodolistAT
     | ChangeTodolistFilterAT
+    | SetEntityStatusAT
 
 
 export const GetTodolistTC = () => (dispatch: Dispatch) => {
@@ -83,10 +98,12 @@ export const GetTodolistTC = () => (dispatch: Dispatch) => {
         })
 }
 export const RemoveTodolistTC = (todolistId: string) => (dispatch: Dispatch) => {
+    dispatch(SetEntityStatusAC(todolistId, true))
     dispatch(SetLoadingStatusAC(true))
     todolistApi.removeTodolist(todolistId)
         .then(res => {
             if (res.resultCode === 0) {
+                dispatch(SetEntityStatusAC(todolistId, false))
                 dispatch(SetLoadingStatusAC(false))
                 dispatch(RemoveTodolistAC(todolistId))
             }

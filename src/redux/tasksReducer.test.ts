@@ -16,7 +16,8 @@ beforeEach(() => {
                 priority: 1,
                 startDate: "2022",
                 deadline: "2022",
-                addedDate: "2022"
+                addedDate: "2022",
+                entityStatus: false,
             },
             {
                 id: "id2",
@@ -28,7 +29,8 @@ beforeEach(() => {
                 priority: 1,
                 startDate: "2022",
                 deadline: "2022",
-                addedDate: "2022"
+                addedDate: "2022",
+                entityStatus: false,
             },
             {
                 id: "id3",
@@ -40,7 +42,8 @@ beforeEach(() => {
                 priority: 1,
                 startDate: "2022",
                 deadline: "2022",
-                addedDate: "2022"
+                addedDate: "2022",
+                entityStatus: false,
             }],
         ["todolistID2"]: [
             {
@@ -53,7 +56,8 @@ beforeEach(() => {
                 priority: 1,
                 startDate: "2022",
                 deadline: "2022",
-                addedDate: "2022"
+                addedDate: "2022",
+                entityStatus: false,
             },
             {
                 id: "id6",
@@ -65,7 +69,8 @@ beforeEach(() => {
                 priority: 1,
                 startDate: "2022",
                 deadline: "2022",
-                addedDate: "2022"
+                addedDate: "2022",
+                entityStatus: false,
             },
             {
                 id: "id7",
@@ -77,7 +82,8 @@ beforeEach(() => {
                 priority: 1,
                 startDate: "2022",
                 deadline: "2022",
-                addedDate: "2022"
+                addedDate: "2022",
+                entityStatus: false,
             },
             {
                 id: "id8",
@@ -89,7 +95,8 @@ beforeEach(() => {
                 priority: 1,
                 startDate: "2022",
                 deadline: "2022",
-                addedDate: "2022"
+                addedDate: "2022",
+                entityStatus: false,
             }],
     }
 })

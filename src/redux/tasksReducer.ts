@@ -3,8 +3,12 @@ import {Dispatch} from "redux";
 import {tasksApi, TaskType} from "../api/task-api";
 import {SetErrorAC, SetLoadingStatusAC} from "./app-reducer";
 
+export type DomainTaskType = TaskType & {
+    entityStatus: boolean
+}
+
 export type TasksListType = {
-    [key: string]: Array<TaskType>
+    [key: string]: Array<DomainTaskType>
 }
 
 const tasksInitialState: TasksListType = {}
@@ -19,10 +23,11 @@ export const tasksReducer = (state: TasksListType = tasksInitialState, action: T
             return stateCopy
         }
         case "SET-TASKS": {
-           const stateCopy = {...state}
-           stateCopy[action.todolistId] = action.tasks
-           return stateCopy
-       }
+            const stateCopy = {...state}
+            const newTasks = action.tasks.map(t => ({...t, entityStatus: false}))
+            stateCopy[action.todolistId] = newTasks
+            return stateCopy
+        }
         case "REMOVE-TASK": {
             const stateCopy = {...state}
             stateCopy[action.todolistsID] = state[action.todolistsID].filter(t => t.id !== action.taskID)
@@ -30,14 +35,14 @@ export const tasksReducer = (state: TasksListType = tasksInitialState, action: T
         }
         case "ADD-TASK": {
             const stateCopy = {...state}
-            const newTask = action.task
+            const newTask = {...action.task, entityStatus: false}
             stateCopy[action.todolistsID] = [newTask, ...state[action.todolistsID]]
             return stateCopy
         }
         case "UPDATE-TASK": {
             const stateCopy = {...state}
             stateCopy[action.todolistsID] = state[action.todolistsID].map(t => t.id === action.task.id
-                ? action.task
+                ? {...action.task, entityStatus: false}
                 : t)
             return stateCopy
         }
@@ -47,6 +52,13 @@ export const tasksReducer = (state: TasksListType = tasksInitialState, action: T
         case "REMOVE-TODOLIST": {
             const stateCopy = {...state}
             delete stateCopy[action.id]
+            return stateCopy
+        }
+        case "SET-ENTITY-STATUS": {
+            const stateCopy = {...state}
+            stateCopy[action.todolistsID] = state[action.todolistsID].map(t => t.id === action.taskID
+                ? {...t, entityStatus: action.entityStatus}
+                : t)
             return stateCopy
         }
         default:
@@ -66,11 +78,15 @@ export const AddTaskAC = (todolistsID: string, task: TaskType) => {
 export const UpdateTaskAC = (todolistsID: string, task: TaskType) => {
     return {type: "UPDATE-TASK", todolistsID, task} as const
 }
+export const SetEntityStatusAC = (todolistsID: string, taskID: string, entityStatus: boolean) => {
+    return {type: 'SET-ENTITY-STATUS', todolistsID, taskID, entityStatus} as const
+}
 
 export type SetTasksAT = ReturnType<typeof SetTasksAC>
 export type RemoveTaskAT = ReturnType<typeof RemoveTaskAC>
 export type AddTaskAT = ReturnType<typeof AddTaskAC>
 export type UpdateTaskAT = ReturnType<typeof UpdateTaskAC>
+export type SetEntityStatusAT = ReturnType<typeof SetEntityStatusAC>
 
 export type TasksActionType = SetTodolistsAT
     | SetTasksAT
@@ -79,6 +95,7 @@ export type TasksActionType = SetTodolistsAT
     | UpdateTaskAT
     | AddTodolistAT
     | RemoveTodolistAT
+    | SetEntityStatusAT
 
 export const GetTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
     dispatch(SetLoadingStatusAC(true))
@@ -89,10 +106,12 @@ export const GetTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
         })
 }
 export const RemoveTaskTC = (todolistId: string, taskId: string) => (dispatch: Dispatch) => {
+    dispatch(SetEntityStatusAC(todolistId, taskId, true))
     dispatch(SetLoadingStatusAC(true))
     tasksApi.removeTask(todolistId, taskId)
         .then(res => {
             if (res.resultCode === 0) {
+                dispatch(SetEntityStatusAC(todolistId, taskId, false))
                 dispatch(SetLoadingStatusAC(false))
                 dispatch(RemoveTaskAC(todolistId, taskId))
             }

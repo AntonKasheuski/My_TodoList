@@ -7,6 +7,7 @@ import {TextField} from "@mui/material";
 type PropsType = {
     title?: string
     addItem: (title: string) => void
+    disabled?: boolean
 }
 
 export const AddItem = React.memo((props: PropsType) => {
@@ -52,10 +53,11 @@ export const AddItem = React.memo((props: PropsType) => {
                        helperText={error ? 'Incorrect entry.' : ''}
                        onChange={itemTextInsertHandler}
                        onKeyPress={addItemOnEnter}
+                       disabled={props.disabled}
             />
             <IconButton color={'primary'}
                         onClick={addItem}
-                        disabled={error}>
+                        disabled={error || props.disabled}>
                 <AddBoxIcon/>
             </IconButton>
         </div>
