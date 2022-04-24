@@ -8,8 +8,8 @@ import {
 let todolistsInitialState: TodolistType[]
 beforeEach(() => {
     todolistsInitialState = [
-        {id: "todolistsID1", addedDate: "2022", order: -1, title: "First TodoList", filter: 'all', entityStatus: false},
-        {id: "todolistsID2", addedDate: "2022", order: 0, title: "Second TodoList", filter: 'all', entityStatus: false},
+        {id: "todolistsID1", addedDate: "2022", order: -1, title: "First TodoList", filter: 'all', status: false},
+        {id: "todolistsID2", addedDate: "2022", order: 0, title: "Second TodoList", filter: 'all', status: false},
     ]
 })
 

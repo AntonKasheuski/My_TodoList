@@ -2,6 +2,7 @@ import {AddTodolistAT, RemoveTodolistAT, SetTodolistsAT} from "./todolistsReduce
 import {Dispatch} from "redux";
 import {tasksApi, TaskType} from "../api/task-api";
 import {SetErrorAC, SetLoadingStatusAC} from "./app-reducer";
+import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
 
 export type DomainTaskType = TaskType & {
     entityStatus: boolean
@@ -24,8 +25,7 @@ export const tasksReducer = (state: TasksListType = tasksInitialState, action: T
         }
         case "SET-TASKS": {
             const stateCopy = {...state}
-            const newTasks = action.tasks.map(t => ({...t, entityStatus: false}))
-            stateCopy[action.todolistId] = newTasks
+            stateCopy[action.todolistId] = action.tasks.map(t => ({...t, entityStatus: false}))
             return stateCopy
         }
         case "REMOVE-TASK": {
@@ -54,7 +54,7 @@ export const tasksReducer = (state: TasksListType = tasksInitialState, action: T
             delete stateCopy[action.id]
             return stateCopy
         }
-        case "SET-ENTITY-STATUS": {
+        case "SET-TASK-STATUS": {
             const stateCopy = {...state}
             stateCopy[action.todolistsID] = state[action.todolistsID].map(t => t.id === action.taskID
                 ? {...t, entityStatus: action.entityStatus}
@@ -78,15 +78,15 @@ export const AddTaskAC = (todolistsID: string, task: TaskType) => {
 export const UpdateTaskAC = (todolistsID: string, task: TaskType) => {
     return {type: "UPDATE-TASK", todolistsID, task} as const
 }
-export const SetEntityStatusAC = (todolistsID: string, taskID: string, entityStatus: boolean) => {
-    return {type: 'SET-ENTITY-STATUS', todolistsID, taskID, entityStatus} as const
+export const SetTaskStatusAC = (todolistsID: string, taskID: string, entityStatus: boolean) => {
+    return {type: 'SET-TASK-STATUS', todolistsID, taskID, entityStatus} as const
 }
 
 export type SetTasksAT = ReturnType<typeof SetTasksAC>
 export type RemoveTaskAT = ReturnType<typeof RemoveTaskAC>
 export type AddTaskAT = ReturnType<typeof AddTaskAC>
 export type UpdateTaskAT = ReturnType<typeof UpdateTaskAC>
-export type SetEntityStatusAT = ReturnType<typeof SetEntityStatusAC>
+export type SetTaskStatusAT = ReturnType<typeof SetTaskStatusAC>
 
 export type TasksActionType = SetTodolistsAT
     | SetTasksAT
@@ -95,26 +95,44 @@ export type TasksActionType = SetTodolistsAT
     | UpdateTaskAT
     | AddTodolistAT
     | RemoveTodolistAT
-    | SetEntityStatusAT
+    | SetTaskStatusAT
 
 export const GetTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
     dispatch(SetLoadingStatusAC(true))
     tasksApi.getTasks(todolistId)
         .then(res => {
+            if (res.error) {
+                dispatch(SetErrorAC(res.error))
+            } else {
+                dispatch(SetTasksAC(res.items, todolistId))
+            }
+        })
+        .catch(error => {
+            handleServerNetworkError(error.message, dispatch)
+        })
+        .finally(() => {
             dispatch(SetLoadingStatusAC(false))
-            dispatch(SetTasksAC(res.items, todolistId))
         })
 }
 export const RemoveTaskTC = (todolistId: string, taskId: string) => (dispatch: Dispatch) => {
-    dispatch(SetEntityStatusAC(todolistId, taskId, true))
+    dispatch(SetTaskStatusAC(todolistId, taskId, true))
     dispatch(SetLoadingStatusAC(true))
     tasksApi.removeTask(todolistId, taskId)
         .then(res => {
             if (res.resultCode === 0) {
-                dispatch(SetEntityStatusAC(todolistId, taskId, false))
-                dispatch(SetLoadingStatusAC(false))
                 dispatch(RemoveTaskAC(todolistId, taskId))
+            } else {
+                handleServerAppError(res, dispatch)
             }
+            dispatch(SetTaskStatusAC(todolistId, taskId, false))
+            dispatch(SetLoadingStatusAC(false))
+        })
+        .catch(error => {
+            handleServerNetworkError(error.message, dispatch)
+        })
+        .finally(() => {
+            dispatch(SetTaskStatusAC(todolistId, taskId, false))
+            dispatch(SetLoadingStatusAC(false))
         })
 }
 export const AddTaskTC = (todolistId: string, title: string) => (dispatch: Dispatch) => {
@@ -122,31 +140,32 @@ export const AddTaskTC = (todolistId: string, title: string) => (dispatch: Dispa
     tasksApi.addTask(todolistId, title)
         .then(res => {
             if (res.resultCode === 0) {
-                dispatch(SetLoadingStatusAC(false))
                 dispatch(AddTaskAC(todolistId, res.data.item))
             } else {
-                dispatch(SetLoadingStatusAC(false))
-                dispatch(SetErrorAC(res.messages[0]))
+                handleServerAppError(res, dispatch)
             }
         })
-}
-export const ChangeTaskStatusTC = (todolistId: string, task: TaskType, isDone: boolean) => (dispatch: Dispatch) => {
-    dispatch(SetLoadingStatusAC(true))
-    tasksApi.changeTaskStatus(todolistId, task, isDone)
-        .then(res => {
-            if (res.resultCode === 0) {
-                dispatch(SetLoadingStatusAC(false))
-                dispatch(UpdateTaskAC(todolistId, res.data.item))
-            }
+        .catch(error => {
+            handleServerNetworkError(error.message, dispatch)
+        })
+        .finally(() => {
+            dispatch(SetLoadingStatusAC(false))
         })
 }
-export const RenameTaskTC = (todolistId: string, task: TaskType, title: string) => (dispatch: Dispatch) => {
+export const UpdateTaskTC = (todolistId: string, task: TaskType, isDone: number, title: string) => (dispatch: Dispatch) => {
     dispatch(SetLoadingStatusAC(true))
-    tasksApi.renameTask(todolistId, task, title)
+    tasksApi.updateTask(todolistId, task, isDone, title)
         .then(res => {
             if (res.resultCode === 0) {
-                dispatch(SetLoadingStatusAC(false))
                 dispatch(UpdateTaskAC(todolistId, res.data.item))
+            } else {
+                handleServerAppError(res, dispatch)
             }
+        })
+        .catch(error => {
+            handleServerNetworkError(error.message, dispatch)
+        })
+        .finally(() => {
+            dispatch(SetLoadingStatusAC(false))
         })
 }

@@ -44,7 +44,7 @@ const TodoList = React.memo((props: TodoListPropsType) => {
                 key={t.id}
                 todoListID={props.todoListID}
                 taskID={t.id}
-                disabled={todolist.entityStatus}
+                disabled={todolist.status}
             />
         )
     })
@@ -65,12 +65,12 @@ const TodoList = React.memo((props: TodoListPropsType) => {
     return (
         <div>
             <h3>
-                <EditableSpan title={todolist.title} renameItem={renameTodoList} disabled={todolist.entityStatus}/>
-                <IconButton onClick={onClickRemoveTodoListHandler} disabled={todolist.entityStatus}>
+                <EditableSpan title={todolist.title} renameItem={renameTodoList} disabled={todolist.status}/>
+                <IconButton onClick={onClickRemoveTodoListHandler} disabled={todolist.status}>
                     <DeleteIcon/>
                 </IconButton>
             </h3>
-            <AddItem addItem={addTask} disabled={todolist.entityStatus}/>
+            <AddItem addItem={addTask} disabled={todolist.status}/>
             <div>
                 {todolistTasks}
             </div>

@@ -1,10 +1,6 @@
 import React, {ChangeEvent, useCallback} from 'react';
 import {EditableSpan} from "./components/EditableSpan";
-import {
-    ChangeTaskStatusTC, DomainTaskType,
-    RemoveTaskTC,
-    RenameTaskTC
-} from "./redux/tasksReducer";
+import {DomainTaskType, RemoveTaskTC, UpdateTaskTC} from "./redux/tasksReducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./redux/store";
 import IconButton from '@mui/material/IconButton';
@@ -26,10 +22,12 @@ export const Task = React.memo((props: TaskPropsType) => {
         dispatch(RemoveTaskTC(todoListID, taskID))
     }, [])
     const changeTaskStatus = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        dispatch(ChangeTaskStatusTC(props.todoListID, task, e.currentTarget.checked))
+        let newStatus = 0;
+        e.currentTarget.checked ? newStatus = TaskStatuses.Completed : newStatus = TaskStatuses.InProgress
+        dispatch(UpdateTaskTC(props.todoListID, task, newStatus, task.title))
     }, [props.todoListID, task])
     const renameTask = useCallback((title: string) => {
-        dispatch(RenameTaskTC(props.todoListID, task, title))
+        dispatch(UpdateTaskTC(props.todoListID, task, task.status, title))
     }, [props.todoListID, task])
 
     return (

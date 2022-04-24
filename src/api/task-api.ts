@@ -1,4 +1,5 @@
 import {instance} from "./api-instance";
+import {ResponseType} from "./todolist-api";
 
 export enum TaskStatuses {
     New = 0,
@@ -20,23 +21,11 @@ export const tasksApi = {
         return instance.post<ResponseType<{item: TaskType}>>(`/todo-lists/${todolistId}/tasks`, {title})
             .then(res => res.data)
     },
-    changeTaskStatus(todolistId: string, task: TaskType, isDone: boolean) {
-        const data = {
-            title: task.title,
-            description: task.description,
-            status: isDone ? TaskStatuses.Completed : TaskStatuses.InProgress,
-            priority: task.priority,
-            startDate: task.startDate,
-            deadline: task.deadline
-        }
-        return instance.put<ResponseType<{item: TaskType}>>(`/todo-lists/${todolistId}/tasks/${task.id}`, data)
-            .then(res => res.data)
-    },
-    renameTask(todolistId: string, task: TaskType, title: string) {
+    updateTask(todolistId: string, task: TaskType, isDone: number, title: string) {
         const data = {
             title: title,
             description: task.description,
-            status: task.status,
+            status: isDone,
             priority: task.priority,
             startDate: task.startDate,
             deadline: task.deadline
@@ -62,10 +51,4 @@ export type TaskType = {
     startDate: string
     deadline: string
     addedDate: string
-}
-type ResponseType<T> = {
-    resultCode: number
-    messages: string[]
-    fieldsErrors: []
-    data: T
 }
