@@ -4,7 +4,7 @@ export type AppInitialStateType = {
 }
 
 const appInitialState: AppInitialStateType = {
-    isLoading: true,
+    isLoading: false,
     error: null
 }
 

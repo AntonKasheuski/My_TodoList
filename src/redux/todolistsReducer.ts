@@ -92,6 +92,7 @@ export type TodolistsActionType = SetTodolistsAT
 
 
 export const GetTodolistTC = () => (dispatch: Dispatch) => {
+    dispatch(SetLoadingStatusAC(true))
     todolistApi.getTodolists()
         .then(res => {
             dispatch(SetTodolistsAC(res))

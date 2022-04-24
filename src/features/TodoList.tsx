@@ -1,22 +1,22 @@
 import React, {useCallback, useEffect} from 'react';
-import './App.module.css'
-import {AddItem} from "./components/AddItem";
-import {EditableSpan} from "./components/EditableSpan";
+import '../App.module.css'
+import {AddItem} from "../components/AddItem";
+import {EditableSpan} from "../components/EditableSpan";
 import {useDispatch, useSelector} from "react-redux";
-import {AddTaskTC, GetTasksTC} from "./redux/tasksReducer";
+import {AddTaskTC, GetTasksTC} from "../redux/tasksReducer";
 import {
     ChangeTodolistFilterAC,
     FilterType,
     RemoveTodolistTC,
     RenameTodolistTC,
     TodolistType
-} from "./redux/todolistsReducer";
-import {AppRootStateType} from "./redux/store";
+} from "../redux/todolistsReducer";
+import {AppRootStateType} from "../redux/store";
 import {Task} from "./Task";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button'
-import {TaskStatuses, TaskType} from "./api/task-api";
+import {TaskStatuses, TaskType} from "../api/task-api";
 
 type TodoListPropsType = {
     todoListID: string
