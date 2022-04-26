@@ -6,18 +6,24 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../redux/store";
 import {AddTodolistTC, GetTodolistTC, TodolistType} from "../redux/todolistsReducer";
 import {AddItem} from "../components/AddItem";
+import {Navigate} from "react-router-dom";
 
 export const TodoListPage = () => {
     const todolists = useSelector<AppRootStateType, TodolistType[]>(state => state.todolists)
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(GetTodolistTC())
-    }, [])
+        isLoggedIn && dispatch(GetTodolistTC())
+    }, [isLoggedIn])
 
     const addTodoList = useCallback((title: string) => {
         dispatch(AddTodolistTC(title))
     }, [])
+
+    if (!isLoggedIn) {
+        return <Navigate to={"/login"}/>
+    }
 
     const todolistsRender = todolists.map(tl => {
         return (
