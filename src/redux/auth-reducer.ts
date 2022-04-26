@@ -46,3 +46,20 @@ export const LoginTC = (values: FormValuesType) => (dispatch: Dispatch) => {
             dispatch(SetLoadingStatusAC(false))
         })
 }
+export const LogoutTC = () => (dispatch: Dispatch) => {
+    dispatch(SetLoadingStatusAC(true))
+    authAPI.logout()
+        .then(res => {
+            if (res.resultCode === 0) {
+                dispatch(SetLoggedInStatusAC(false))
+            } else {
+                handleServerAppError(res, dispatch)
+            }
+        })
+        .catch(error => {
+            handleServerNetworkError(error.message, dispatch)
+        })
+        .finally(() => {
+            dispatch(SetLoadingStatusAC(false))
+        })
+}

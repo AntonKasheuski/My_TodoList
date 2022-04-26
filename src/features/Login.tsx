@@ -46,7 +46,6 @@ export const Login = () => {
         },
         validate,
         onSubmit: values => {
-            alert(JSON.stringify(values));
             dispatch(LoginTC(values))
             formik.resetForm();
         },
